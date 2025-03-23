@@ -1,0 +1,31 @@
+name: Python CI  # Название workflow
+
+on:  # Указываем, когда запускать workflow
+  push:  # Запуск при push в репозиторий
+    branches: [ main ]  # Указываем ветку (можно добавить несколько)
+  pull_request:  # Запуск при создании pull request
+    branches: [ main ]
+
+jobs:  # Описание задач (jobs)
+  build:  # Название задачи
+    runs-on: ubuntu-latest  # ОС для выполнения задачи
+
+    steps:  # Шаги, которые будут выполнены
+    - uses: actions/checkout@v3  # Клонирование репозитория
+
+    - name: Set up Python  # Установка Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'  # Указываем версию Python
+
+    - name: Make st.sh executable  # Делаем st.sh исполняемым
+      run: chmod +x ./flaskapp/st.sh
+
+    - name: Install dependencies  # Установка зависимостей
+      run: |
+        pip install flask gunicorn requests
+
+    - name: Run script  # Запуск скрипта
+      run: |
+        cd flaskapp
+        ./st.sh
